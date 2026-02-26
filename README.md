@@ -1,11 +1,11 @@
 # PowerSun — TRON Energy & Bandwidth MCP Server
 
 > **The first TRON Energy marketplace for AI agents.**
-> Buy and sell TRON network resources via MCP, REST API, or HTTP 402 pay-per-use.
+> Buy energy, sell resources, and earn passive income — fully autonomous via MCP, REST API, or HTTP 402.
 > **Only 10% commission** — the lowest on the market.
 
 [![MCP](https://img.shields.io/badge/MCP-Streamable_HTTP-blue)](https://powersun.vip/mcp)
-[![Tools](https://img.shields.io/badge/Tools-16-green)](https://powersun.vip/agents)
+[![Tools](https://img.shields.io/badge/Tools-21-green)](https://powersun.vip/agents)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-orange)](https://powersun.vip/openapi.json)
 [![Commission](https://img.shields.io/badge/Commission-10%25-brightgreen)](https://powersun.vip)
 
@@ -25,7 +25,7 @@
 - **Save 20–50%** on TRON transaction fees by renting Energy instead of burning TRX.
 - **Instant delegation** — Energy is delegated to your address within seconds after payment.
 - **Flexible durations** — rent from 5 minutes to 30 days, pay only for what you need.
-- **Earn by selling** — stake TRX, join the seller pool, and earn passive income from your unused Energy.
+- **Autonomous selling** — AI agents can register pools, verify permissions, vote for SRs, and earn passive income entirely through MCP.
 - **Human + AI friendly** — full web interface for humans, MCP + REST API + HTTP 402 for agents.
 - **No registration required** — use HTTP 402 pay-per-use or x402 (USDC on Base) without creating an account.
 
@@ -51,7 +51,7 @@ Every TRON transaction (USDT transfers, smart contract calls) requires Energy. W
 
 That's it — no API keys, no npm install, no Docker. The server is hosted and always available.
 
-### With authentication (for balance & order management)
+### With authentication (for balance, orders & selling)
 
 ```json
 {
@@ -68,9 +68,9 @@ That's it — no API keys, no npm install, no Docker. The server is hosted and a
 
 ---
 
-## MCP Tools (16 total)
+## MCP Tools (21 total)
 
-### Market Tools (public, no auth required)
+### Market Tools — 4 tools (public, no auth required)
 
 | Tool | Description |
 |------|-------------|
@@ -79,7 +79,7 @@ That's it — no API keys, no npm install, no Docker. The server is hosted and a
 | `get_available_resources` | Check available Energy & Bandwidth in the marketplace |
 | `get_market_overview` | Full market snapshot — prices, availability, order stats |
 
-### Buyer Tools (auth recommended)
+### Buyer Tools — 6 tools (auth recommended)
 
 | Tool | Description |
 |------|-------------|
@@ -90,16 +90,68 @@ That's it — no API keys, no npm install, no Docker. The server is hosted and a
 | `get_deposit_info` | Get deposit address and payment instructions |
 | `broadcast_transaction` | Broadcast a pre-signed TRON transaction with automatic Energy delegation |
 
-### Seller Tools (auth required)
+### Seller Tools — 11 tools (auth required)
 
+#### Pool Management
 | Tool | Description |
 |------|-------------|
+| `register_pool` | Register a TRON address as a selling pool (autonomous onboarding) |
 | `get_pool_stats` | Pool performance and delegation statistics |
 | `get_earnings` | Earnings breakdown and history |
 | `get_auto_selling_config` | Current auto-selling configuration |
 | `configure_auto_selling` | Enable/disable auto-selling with price settings |
 | `get_pool_delegations` | Active delegations from your pool |
 | `withdraw_earnings` | Withdraw earned TRX to your wallet |
+
+#### On-Chain Operations
+| Tool | Description |
+|------|-------------|
+| `get_onchain_status` | Live blockchain state — balance, frozen TRX, energy/bandwidth, votes, claimable rewards |
+| `check_pool_permissions` | Verify platform has required on-chain permissions (delegate, undelegate, vote) |
+| `trigger_vote` | Vote for Super Representative to earn staking rewards |
+| `get_auto_action_history` | View auto-action execution logs (stake, vote, claim) |
+
+---
+
+## Become a Seller — Autonomous Flow
+
+AI agents can go from "I have a TRON wallet with TRX" to "I'm earning passive income" entirely through MCP:
+
+### Step 1: Register Pool
+```
+MCP tool: register_pool
+→ Creates selling pool + auto-selling config
+→ Returns step-by-step guide for granting permissions
+```
+
+### Step 2: Grant Permissions
+Grant 3 active permissions to the platform address (via TronLink or tronWeb):
+- **DelegateResource** (57) — delegate energy to buyers
+- **UnDelegateResource** (58) — reclaim delegated resources
+- **VoteWitness** (4) — vote for SRs to earn rewards
+
+> **Security:** Agent permissions are limited to delegate, undelegate, and vote only. Staking (freeze) and reward claiming are managed by the platform automatically.
+
+### Step 3: Verify Permissions
+```
+MCP tool: check_pool_permissions
+→ Reads on-chain permissions and shows status per operation
+→ Reports missing required/optional permissions
+```
+
+### Step 4: Vote & Earn
+```
+MCP tool: trigger_vote
+→ Votes for the highest-APY Super Representative
+→ Returns SR details, vote count, and tx hash
+```
+
+### Step 5: Monitor
+```
+MCP tools: get_onchain_status, get_earnings, get_auto_action_history
+→ Track balance, frozen TRX, energy usage, voting rewards
+→ View selling earnings and auto-action execution logs
+```
 
 ---
 
@@ -185,7 +237,7 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 - **Trading bots** — Bulk Energy purchases for high-frequency TRON transactions
 - **DApp backends** — Provide free transactions to users by delegating Energy
 - **Multi-chain agents** — Pay with USDC on Base, receive Energy on TRON
-- **Energy sellers** — Stake TRX, join the pool, earn passive income with 10% commission
+- **Autonomous sellers** — Register a pool via MCP, vote for SRs, earn staking + selling rewards with zero manual intervention
 
 ---
 
@@ -220,14 +272,15 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 │              PowerSun Server                  │
 │                                              │
 │  ┌─────────┐ ┌──────────┐ ┌──────────────┐  │
-│  │16 MCP   │ │ REST API │ │ HTTP 402     │  │
+│  │21 MCP   │ │ REST API │ │ HTTP 402     │  │
 │  │Tools    │ │ Endpoints│ │ + x402 USDC  │  │
 │  └────┬────┘ └────┬─────┘ └──────┬───────┘  │
 │       └───────────┴──────────────┘           │
 │                    │                          │
 │       ┌────────────┴────────────┐            │
 │       │    Order Engine +       │            │
-│       │    Pool Management      │            │
+│       │    Pool Management +    │            │
+│       │    Auto-Actions         │            │
 │       └────────────┬────────────┘            │
 └────────────────────┼─────────────────────────┘
                      │
@@ -241,7 +294,7 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 
 ## GitHub Topics
 
-`tron` `tron-energy` `tron-bandwidth` `mcp` `mcp-server` `ai-agent` `blockchain` `trx` `usdt` `energy-rental` `bandwidth` `http-402` `x402` `rest-api` `crypto` `defi`
+`tron` `tron-energy` `tron-bandwidth` `mcp` `mcp-server` `ai-agent` `blockchain` `trx` `usdt` `energy-rental` `bandwidth` `http-402` `x402` `rest-api` `crypto` `defi` `passive-income` `staking`
 
 ---
 
