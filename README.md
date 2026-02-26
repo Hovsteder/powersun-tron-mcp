@@ -1,4 +1,4 @@
-# [PowerSun](https://powersun.vip) — TRON Energy & Bandwidth MCP Server
+# [PowerSun.vip](https://powersun.vip) — TRON Energy & Bandwidth MCP Server
 
 > **The first TRON Energy marketplace for AI agents.**
 > Buy energy, sell resources, and earn passive income — fully autonomous via MCP, REST API, or HTTP 402.
@@ -15,13 +15,13 @@
 
 ---
 
-## About [PowerSun](https://powersun.vip)
+## About [PowerSun.vip](https://powersun.vip)
 
-[PowerSun](https://powersun.vip) is a full-featured **TRON Energy & Bandwidth marketplace** where users and AI agents can buy and sell network resources required for TRON transactions.
+[PowerSun.vip](https://powersun.vip) is a full-featured **TRON Energy & Bandwidth marketplace** where users and AI agents can buy and sell network resources required for TRON transactions.
 
 ### Platform Highlights
 
-- **Only 10% commission** — competitors charge 15–30%. [PowerSun](https://powersun.vip) offers the lowest fees on the market.
+- **Only 10% commission** — competitors charge 15–30%. [PowerSun.vip](https://powersun.vip) offers the lowest fees on the market.
 - **Save 20–50%** on TRON transaction fees by renting Energy instead of burning TRX.
 - **Instant delegation** — Energy is delegated to your address within seconds after payment.
 - **Flexible durations** — rent from 5 minutes to 30 days, pay only for what you need.
@@ -31,7 +31,7 @@
 
 ### Why TRON Energy Matters
 
-Every TRON transaction (USDT transfers, smart contract calls) requires Energy. Without it, TRX tokens are burned as fees. For example, a single USDT transfer burns ~27 TRX (~$7) without Energy. With [PowerSun](https://powersun.vip), the same transfer costs as little as ~$1.
+Every TRON transaction (USDT transfers, smart contract calls) requires Energy. Without it, TRX tokens are burned as fees. For example, a single USDT transfer burns ~27 TRX (~$7) without Energy. With [PowerSun.vip](https://powersun.vip), the same transfer costs as little as ~$1.
 
 ---
 
@@ -157,7 +157,7 @@ MCP tools: get_onchain_status, get_earnings, get_auto_action_history
 
 ## Payment Methods
 
-[PowerSun](https://powersun.vip) supports three payment flows — choose what's most convenient:
+[PowerSun.vip](https://powersun.vip) supports three payment flows — choose what's most convenient:
 
 ### 1. API Key + TRX Balance
 Register a TRON wallet, deposit TRX, buy from balance. Best for repeat usage.
@@ -216,7 +216,7 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 
 | Platform | Commission |
 |----------|-----------|
-| **[PowerSun](https://powersun.vip)** | **10%** |
+| **[PowerSun.vip](https://powersun.vip)** | **10%** |
 | Competitor A | 15–20% |
 | Competitor B | 20–30% |
 
@@ -268,7 +268,7 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
            │ MCP          │ REST API
            ▼              ▼
 ┌──────────────────────────────────────────────┐
-│              PowerSun Server                  │
+│            PowerSun.vip Server                │
 │                                              │
 │  ┌─────────┐ ┌──────────┐ ┌──────────────┐  │
 │  │21 MCP   │ │ REST API │ │ HTTP 402     │  │
@@ -308,4 +308,4 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 
 ## License
 
-This repository contains documentation only. The [PowerSun](https://powersun.vip) platform is a hosted service available at [powersun.vip](https://powersun.vip).
+This repository contains documentation only. The [PowerSun.vip](https://powersun.vip) platform is a hosted service available at [powersun.vip](https://powersun.vip).
