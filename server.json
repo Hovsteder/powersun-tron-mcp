@@ -1,0 +1,16 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Hovsteder/powersun-tron-mcp",
+  "description": "TRON Energy & Bandwidth marketplace for AI agents. Buy/sell via MCP, REST, HTTP 402.",
+  "repository": {
+    "url": "https://github.com/Hovsteder/powersun-tron-mcp",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://powersun.vip/mcp"
+    }
+  ]
+}
