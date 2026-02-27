@@ -5,7 +5,7 @@
 > **Only 10% commission** — the lowest on the market.
 
 [![MCP](https://img.shields.io/badge/MCP-Streamable_HTTP-blue)](https://powersun.vip/mcp)
-[![Tools](https://img.shields.io/badge/Tools-21-green)](https://powersun.vip/agents)
+[![Tools](https://img.shields.io/badge/Tools-25-green)](https://powersun.vip/agents)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-orange)](https://powersun.vip/openapi.json)
 [![Commission](https://img.shields.io/badge/Commission-10%25-brightgreen)](https://powersun.vip)
 
@@ -68,7 +68,20 @@ That's it — no API keys, no npm install, no Docker. The server is hosted and a
 
 ---
 
-## MCP Tools (21 total)
+## MCP Tools (25 total)
+
+### Onboarding Tools — 4 tools (self-service registration via MCP)
+
+These tools let agents register, authenticate, and grant permissions — entirely within a single MCP session. No REST API needed.
+
+| Tool | Description |
+|------|-------------|
+| `register` | Start registration — get a challenge to sign with your TRON wallet |
+| `verify_registration` | Submit wallet signature → get API key, session upgrades automatically |
+| `build_permission_transaction` | Build an unsigned AccountPermissionUpdate tx to grant platform permissions |
+| `broadcast_signed_permission_tx` | Broadcast the signed permission tx and verify on-chain |
+
+> **Returning users:** If the wallet is already registered, `verify_registration` returns the existing API key + account status (pools, permissions, balance).
 
 ### Market Tools — 4 tools (public, no auth required)
 
@@ -113,44 +126,48 @@ That's it — no API keys, no npm install, no Docker. The server is hosted and a
 
 ---
 
-## Become a Seller — Autonomous Flow
+## Full Autonomous Onboarding
 
-AI agents can go from "I have a TRON wallet with TRX" to "I'm earning passive income" entirely through MCP:
+AI agents can go from "I have a TRON wallet with a private key" to "I'm earning passive income" — in a single MCP session:
 
-### Step 1: Register Pool
+### Step 1: Register & Authenticate
 ```
-MCP tool: register_pool
-→ Creates selling pool + auto-selling config
-→ Returns step-by-step guide for granting permissions
+MCP: register { address: "TMyWallet..." }
+→ challengeId + challenge text
+
+Agent signs: tronWeb.trx.signMessageV2(challenge, privateKey)
+
+MCP: verify_registration { challengeId, address, signature }
+→ API key + balance + session upgraded
+→ All authenticated tools now work in this session
 ```
 
 ### Step 2: Grant Permissions
-Grant 3 active permissions to the platform address (via TronLink or tronWeb):
-- **DelegateResource** (57) — delegate energy to buyers
-- **UnDelegateResource** (58) — reclaim delegated resources
-- **VoteWitness** (4) — vote for SRs to earn rewards
-
-> **Security:** Agent permissions are limited to delegate, undelegate, and vote only. Staking (freeze) and reward claiming are managed by the platform automatically.
-
-### Step 3: Verify Permissions
 ```
-MCP tool: check_pool_permissions
-→ Reads on-chain permissions and shows status per operation
-→ Reports missing required/optional permissions
+MCP: build_permission_transaction { poolAddress: "TMyWallet..." }
+→ unsigned AccountPermissionUpdate transaction
+→ Grants: DelegateResource(57), UnDelegateResource(58), VoteWitness(4)
+
+Agent signs: tronWeb.trx.sign(unsignedTx, privateKey)
+
+MCP: broadcast_signed_permission_tx { signedTransaction, poolAddress }
+→ txHash + permissions verified on-chain
 ```
 
-### Step 4: Vote & Earn
+> **Security:** Agent permissions are limited to delegate, undelegate, and vote only. No access to FreezeBalanceV2 or WithdrawBalance. Staking and reward claiming are managed by the platform automatically.
+
+### Step 3: Register Pool
 ```
-MCP tool: trigger_vote
-→ Votes for the highest-APY Super Representative
-→ Returns SR details, vote count, and tx hash
+MCP: register_pool { paymentAddress: "TMyWallet..." }
+→ Pool created, auto-selling enabled
 ```
 
-### Step 5: Monitor
+### Step 4: Vote & Monitor
 ```
-MCP tools: get_onchain_status, get_earnings, get_auto_action_history
-→ Track balance, frozen TRX, energy usage, voting rewards
-→ View selling earnings and auto-action execution logs
+MCP: trigger_vote → Vote for highest-APY Super Representative
+MCP: get_onchain_status → Balance, frozen TRX, energy, votes, rewards
+MCP: get_earnings → Selling earnings breakdown
+MCP: get_auto_action_history → Auto-action execution logs
 ```
 
 ---
@@ -271,7 +288,7 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 │            PowerSun.vip Server                │
 │                                              │
 │  ┌─────────┐ ┌──────────┐ ┌──────────────┐  │
-│  │21 MCP   │ │ REST API │ │ HTTP 402     │  │
+│  │25 MCP   │ │ REST API │ │ HTTP 402     │  │
 │  │Tools    │ │ Endpoints│ │ + x402 USDC  │  │
 │  └────┬────┘ └────┬─────┘ └──────┬───────┘  │
 │       └───────────┴──────────────┘           │
