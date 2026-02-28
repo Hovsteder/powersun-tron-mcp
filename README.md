@@ -102,14 +102,14 @@ These tools let agents register, authenticate, and grant permissions — entirel
 | `get_orders` | List your recent orders |
 | `get_order_status` | Detailed order status with delegation progress |
 | `get_deposit_info` | Get deposit address and payment instructions |
-| `broadcast_transaction` | Broadcast a pre-signed TRON transaction with automatic Energy delegation |
+| `broadcast_transaction` | Broadcast a pre-signed TRON transaction with automatic Energy delegation. Works with API key (balance), x402 USDC, or 402 pay-per-use — no registration required. |
 
 ### Swap Tools — 2 tools (auth recommended)
 
 | Tool | Description |
 |------|-------------|
 | `get_swap_quote` | Get a swap quote from SunSwap V2 Smart Router — returns expected output, minimum output with slippage, energy cost, and unsigned TX to sign. Supports TRX, USDT, USDC, USDD, SUN, BTT, WIN, JST, or any TRC-20 contract address. |
-| `execute_swap` | Broadcast a pre-signed swap transaction with automatic Energy delegation. Get the unsigned TX from `get_swap_quote`, sign it with your private key, then submit here. |
+| `execute_swap` | Broadcast a pre-signed swap transaction with automatic Energy delegation. Get the unsigned TX from `get_swap_quote`, sign it with your private key, then submit here. Works with API key, x402, or 402. |
 
 > **Swap flow:** `get_swap_quote` → agent signs unsigned TX → `execute_swap` → tokens swapped with energy delegation included.
 
@@ -235,10 +235,10 @@ curl -X POST https://powersun.vip/api/v2/agent/swap \
 Register a TRON wallet, deposit TRX, buy from balance. Best for repeat usage.
 
 ### 2. HTTP 402 Pay-per-use (TRX)
-No registration needed. Request energy → receive 402 response with platform deposit address and unique TRX amount → send exact amount to the platform wallet on TRON → poll for completion. Payment is matched by unique amount. Fully autonomous.
+No registration needed. Works with all endpoints: buy-energy, broadcast, and swap. Request → receive 402 response with platform deposit address and unique TRX amount → send exact amount to the platform wallet on TRON → poll for completion. Payment is matched by unique amount. Fully autonomous.
 
 ### 3. x402 Protocol (USDC on Base)
-No registration needed. Request energy → receive 402 with x402 payment requirements → sign EIP-3009 `transferWithAuthorization` → resend with `X-PAYMENT` header → instant settlement. Cross-chain payments powered by [Coinbase x402](https://www.coinbase.com/x402).
+No registration needed. Works with all endpoints: buy-energy, broadcast, and swap. Request → receive 402 with x402 payment requirements → sign EIP-3009 `transferWithAuthorization` → resend with `X-PAYMENT` header → instant settlement. Cross-chain payments powered by [Coinbase x402](https://www.coinbase.com/x402).
 
 ---
 
@@ -253,7 +253,7 @@ Full REST API available alongside MCP:
 | `POST /api/v2/agent/estimate` | Estimate cost |
 | `POST /api/v2/agent/buy-energy` | Purchase energy (API key, 402, or x402) |
 | `POST /api/v2/agent/swap` | Get swap quote from SunSwap DEX (returns unsigned TX) |
-| `POST /api/v2/agent/broadcast` | Broadcast signed transaction (energy purchase or swap) |
+| `POST /api/v2/agent/broadcast` | Broadcast signed transaction with auto Energy (API key, 402, or x402) |
 | `GET /api/v2/agent/balance` | Check balance |
 | `GET /api/v2/agent/order/{id}` | Order status |
 | `GET /api/v2/agent/payment-status/{id}` | 402 payment status |
