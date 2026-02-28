@@ -1,11 +1,11 @@
-# [PowerSun.vip](https://powersun.vip) — TRON Energy & Bandwidth MCP Server
+# [PowerSun.vip](https://powersun.vip) — TRON Energy & Bandwidth MCP Server + DEX Swap Aggregator
 
-> **The first TRON Energy marketplace for AI agents.**
-> Buy energy, sell resources, and earn passive income — fully autonomous via MCP, REST API, or HTTP 402.
+> **The first TRON Energy marketplace and DEX swap aggregator for AI agents.**
+> Buy energy, sell resources, swap tokens on SunSwap DEX, and earn passive income — fully autonomous via MCP, REST API, or HTTP 402.
 > **Only 10% commission** — the lowest on the market.
 
 [![MCP](https://img.shields.io/badge/MCP-Streamable_HTTP-blue)](https://powersun.vip/mcp)
-[![Tools](https://img.shields.io/badge/Tools-25-green)](https://powersun.vip/agents)
+[![Tools](https://img.shields.io/badge/Tools-27-green)](https://powersun.vip/agents)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-orange)](https://powersun.vip/openapi.json)
 [![Commission](https://img.shields.io/badge/Commission-10%25-brightgreen)](https://powersun.vip)
 
@@ -17,12 +17,13 @@
 
 ## About [PowerSun.vip](https://powersun.vip)
 
-[PowerSun.vip](https://powersun.vip) is a full-featured **TRON Energy & Bandwidth marketplace** where users and AI agents can buy and sell network resources required for TRON transactions.
+[PowerSun.vip](https://powersun.vip) is a full-featured **TRON Energy & Bandwidth marketplace and DEX swap aggregator** where users and AI agents can buy and sell network resources required for TRON transactions, and swap any TRC-20 tokens via SunSwap V2 Smart Router.
 
 ### Platform Highlights
 
 - **Only 10% commission** — competitors charge 15–30%. [PowerSun.vip](https://powersun.vip) offers the lowest fees on the market.
 - **Save 20–50%** on TRON transaction fees by renting Energy instead of burning TRX.
+- **DEX Token Swaps** — swap any TRC-20 token pair (TRX, USDT, USDC, USDD, SUN, BTT, WIN, JST, or any contract address) via SunSwap V2 Smart Router with automatic energy delegation.
 - **Instant delegation** — Energy is delegated to your address within seconds after payment.
 - **Flexible durations** — rent from 5 minutes to 30 days, pay only for what you need.
 - **Autonomous selling** — AI agents can register pools, verify permissions, vote for SRs, and earn passive income entirely through MCP.
@@ -51,7 +52,7 @@ Every TRON transaction (USDT transfers, smart contract calls) requires Energy. W
 
 That's it — no API keys, no npm install, no Docker. The server is hosted and always available.
 
-### With authentication (for balance, orders & selling)
+### With authentication (for balance, orders, selling & swaps)
 
 ```json
 {
@@ -68,7 +69,7 @@ That's it — no API keys, no npm install, no Docker. The server is hosted and a
 
 ---
 
-## MCP Tools (25 total)
+## MCP Tools (27 total)
 
 ### Onboarding Tools — 4 tools (self-service registration via MCP)
 
@@ -102,6 +103,15 @@ These tools let agents register, authenticate, and grant permissions — entirel
 | `get_order_status` | Detailed order status with delegation progress |
 | `get_deposit_info` | Get deposit address and payment instructions |
 | `broadcast_transaction` | Broadcast a pre-signed TRON transaction with automatic Energy delegation |
+
+### Swap Tools — 2 tools (auth recommended)
+
+| Tool | Description |
+|------|-------------|
+| `get_swap_quote` | Get a swap quote from SunSwap V2 Smart Router — returns expected output, minimum output with slippage, energy cost, and unsigned TX to sign. Supports TRX, USDT, USDC, USDD, SUN, BTT, WIN, JST, or any TRC-20 contract address. |
+| `execute_swap` | Broadcast a pre-signed swap transaction with automatic Energy delegation. Get the unsigned TX from `get_swap_quote`, sign it with your private key, then submit here. |
+
+> **Swap flow:** `get_swap_quote` → agent signs unsigned TX → `execute_swap` → tokens swapped with energy delegation included.
 
 ### Seller Tools — 11 tools (auth required)
 
@@ -172,6 +182,51 @@ MCP: get_auto_action_history → Auto-action execution logs
 
 ---
 
+## Token Swap (SunSwap DEX)
+
+PowerSun integrates with **SunSwap V2 Smart Router** to provide non-custodial token swaps on the TRON network. Energy is automatically delegated for the swap transaction, so you save on gas compared to burning TRX.
+
+### Supported Tokens
+
+TRX, USDT, USDC, USDD, SUN, BTT, WIN, JST — or any TRC-20 contract address.
+
+### Swap via MCP
+
+```
+MCP: get_swap_quote {
+  fromToken: "TRX",
+  toToken: "USDT",
+  amountIn: "10000000",     // 10 TRX in SUN
+  slippageBps: 50,          // 0.5%
+  senderAddress: "TMyWallet..."
+}
+→ quote (expected output, minimum output, price impact)
+→ energy (cost, savings vs burn)
+→ unsignedTx (raw transaction to sign)
+
+Agent signs: tronWeb.trx.sign(unsignedTx, privateKey)
+
+MCP: execute_swap { signedTransaction: "..." }
+→ txHash + swap result
+```
+
+### Swap via REST API
+
+```bash
+curl -X POST https://powersun.vip/api/v2/agent/swap \
+  -H "X-API-Key: ps_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fromToken": "TRX",
+    "toToken": "USDT",
+    "amountIn": "10000000",
+    "slippageBps": 50,
+    "senderAddress": "TYourAddress..."
+  }'
+```
+
+---
+
 ## Payment Methods
 
 [PowerSun.vip](https://powersun.vip) supports three payment flows — choose what's most convenient:
@@ -197,10 +252,11 @@ Full REST API available alongside MCP:
 | `POST /api/v2/agent/verify` | Verify signature, get API key |
 | `POST /api/v2/agent/estimate` | Estimate cost |
 | `POST /api/v2/agent/buy-energy` | Purchase energy (API key, 402, or x402) |
+| `POST /api/v2/agent/swap` | Get swap quote from SunSwap DEX (returns unsigned TX) |
+| `POST /api/v2/agent/broadcast` | Broadcast signed transaction (energy purchase or swap) |
 | `GET /api/v2/agent/balance` | Check balance |
 | `GET /api/v2/agent/order/{id}` | Order status |
 | `GET /api/v2/agent/payment-status/{id}` | 402 payment status |
-| `POST /api/v2/agent/broadcast` | Broadcast transaction |
 
 ---
 
@@ -229,6 +285,8 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 
 **Available durations:** 5min, 10min, 15min, 30min, 1h, 6h, 1d, 7d, 30d
 
+**Swap energy cost:** When swapping tokens, PowerSun automatically delegates 5-minute Energy for the swap transaction. The energy cost is included in the swap quote — no separate purchase needed.
+
 ### Commission Comparison
 
 | Platform | Commission |
@@ -239,11 +297,22 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 
 ---
 
+## SDKs
+
+| Package | Language | Install | Tools |
+|---------|----------|---------|-------|
+| [@powersun/mcp-client](https://www.npmjs.com/package/@powersun/mcp-client) | TypeScript | `npm i @powersun/mcp-client` | Energy + Swap |
+| [langchain-powersun](https://pypi.org/project/langchain-powersun/) | Python | `pip install langchain-powersun` | 12 LangChain tools |
+| [crewai-powersun](https://pypi.org/project/crewai-powersun/) | Python | `pip install crewai-powersun` | 9 CrewAI tools |
+| [Hovsteder/tron-energy-action](https://github.com/Hovsteder/tron-energy-action) | GitHub Action | `uses: Hovsteder/tron-energy-action@v1` | CI/CD energy rental |
+
+---
+
 ## Supported Networks
 
 | Network | Asset | Usage |
 |---------|-------|-------|
-| TRON mainnet | TRX | Native payment + resource delegation |
+| TRON mainnet | TRX | Native payment + resource delegation + token swaps |
 | Base (EVM) | USDC | x402 payment via Coinbase facilitator |
 
 ---
@@ -252,6 +321,7 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 
 - **Wallet agents** — Automatically rent Energy before sending USDT/TRX, reducing fees by 20–50%
 - **Trading bots** — Bulk Energy purchases for high-frequency TRON transactions
+- **DEX swap agents** — Swap any TRC-20 token pair on SunSwap DEX with automatic energy delegation and slippage protection
 - **DApp backends** — Provide free transactions to users by delegating Energy
 - **Multi-chain agents** — Pay with USDC on Base, receive Energy on TRON
 - **Autonomous sellers** — Register a pool via MCP, vote for SRs, earn staking + selling rewards with zero manual intervention
@@ -288,7 +358,7 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 │            PowerSun.vip Server                │
 │                                              │
 │  ┌─────────┐ ┌──────────┐ ┌──────────────┐  │
-│  │25 MCP   │ │ REST API │ │ HTTP 402     │  │
+│  │27 MCP   │ │ REST API │ │ HTTP 402     │  │
 │  │Tools    │ │ Endpoints│ │ + x402 USDC  │  │
 │  └────┬────┘ └────┬─────┘ └──────┬───────┘  │
 │       └───────────┴──────────────┘           │
@@ -296,6 +366,7 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 │       ┌────────────┴────────────┐            │
 │       │    Order Engine +       │            │
 │       │    Pool Management +    │            │
+│       │    SunSwap Router +     │            │
 │       │    Auto-Actions         │            │
 │       └────────────┬────────────┘            │
 └────────────────────┼─────────────────────────┘
@@ -303,14 +374,14 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
         ┌────────────┴────────────┐
         ▼                         ▼
    TRON Mainnet              Base (EVM)
-   (Energy delegation)    (USDC settlement)
+   (Energy + Swaps)       (USDC settlement)
 ```
 
 ---
 
 ## GitHub Topics
 
-`tron` `tron-energy` `tron-bandwidth` `mcp` `mcp-server` `ai-agent` `blockchain` `trx` `usdt` `energy-rental` `bandwidth` `http-402` `x402` `rest-api` `crypto` `defi` `passive-income` `staking`
+`tron` `tron-energy` `tron-bandwidth` `mcp` `mcp-server` `ai-agent` `blockchain` `trx` `usdt` `energy-rental` `bandwidth` `http-402` `x402` `rest-api` `crypto` `defi` `passive-income` `staking` `sunswap` `dex-swap` `token-swap`
 
 ---
 
