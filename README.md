@@ -8,6 +8,11 @@
 [![Tools](https://img.shields.io/badge/Tools-27-green)](https://powersun.vip/agents)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-orange)](https://powersun.vip/openapi.json)
 [![Commission](https://img.shields.io/badge/Commission-10%25-brightgreen)](https://powersun.vip)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Hovsteder/powersun-tron-mcp/blob/main/LICENSE)
+
+<a href="https://glama.ai/mcp/servers/Hovsteder/powersun-tron-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/Hovsteder/powersun-tron-mcp/badge" alt="PowerSun MCP server" />
+</a>
 
 **MCP Endpoint:** `https://powersun.vip/mcp`
 **Transport:** Streamable HTTP (remote — no installation required)
@@ -396,4 +401,6 @@ Bandwidth prices follow a 10x ratio (e.g. 800 SUN for 5 min, 500 SUN for 30 days
 
 ## License
 
-This repository contains documentation only. The [PowerSun.vip](https://powersun.vip) platform is a hosted service available at [powersun.vip](https://powersun.vip).
+MIT License. See [LICENSE](LICENSE) for details.
+
+The [PowerSun.vip](https://powersun.vip) platform is a hosted service available at [powersun.vip](https://powersun.vip).
